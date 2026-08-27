@@ -278,6 +278,8 @@ const EXT_IMAGEN = ["jpg","jpeg","png","webp","gif"];
 
 let GENEROS = {}; // { nombreGenero: {icono: url|null, canciones:[...]} }
 let GENERO_ACTUAL = null;
+let LISTA_ACTUAL = [];
+let INDICE_ACTUAL = -1;
 
 function obtenerConfiguracion(){
   const host = location.hostname;
@@ -427,6 +429,7 @@ function abrirGenero(genero){
 function renderizarLista(canciones){
   const lista = document.getElementById("lista");
   lista.innerHTML = "";
+  LISTA_ACTUAL = canciones;
 
   canciones.forEach((cancion, indice) => {
     const fila = document.createElement("div");
@@ -443,7 +446,7 @@ function renderizarLista(canciones){
         <p class="autor"></p>
       </div>
     `;
-    fila.addEventListener("click", () => abrirReproductor(cancion));
+    fila.addEventListener("click", () => abrirReproductor(indice));
     lista.appendChild(fila);
 
     leerEtiquetasId3(cancion, fila);
@@ -488,14 +491,20 @@ async function leerEtiquetasId3(cancion, fila){
             const img = document.createElement("img");
             img.alt = cancion.titulo;
             img.referrerPolicy = "no-referrer";
-            img.onload = () => {
+            img.src = urlImagen;
+
+            const mostrarImagen = () => {
               const marcador = envoltorio.querySelector(".sin-caratula");
               if(marcador) marcador.remove();
-              void envoltorio.offsetHeight;
+              if(!envoltorio.contains(img)) envoltorio.prepend(img);
             };
+
+            if(img.decode){
+              img.decode().then(mostrarImagen).catch(() => { img.onload = mostrarImagen; });
+            } else {
+              img.onload = mostrarImagen;
+            }
             img.onerror = () => { img.remove(); };
-            envoltorio.prepend(img);
-            img.src = urlImagen;
           }
         }
       },
@@ -509,7 +518,10 @@ async function leerEtiquetasId3(cancion, fila){
 }
 
 /* ---------------- Vista reproductor ---------------- */
-function abrirReproductor(cancion){
+function abrirReproductor(indice){
+  INDICE_ACTUAL = indice;
+  const cancion = LISTA_ACTUAL[indice];
+
   const marco = document.getElementById("rep-marco");
   const titulo = document.getElementById("rep-titulo");
   const autor = document.getElementById("rep-autor");
@@ -523,10 +535,23 @@ function abrirReproductor(cancion){
     ? `<img src="${urlPortada}" alt="${cancion.titulo}">`
     : `<div class="emoji">🎵</div>`;
 
+  // Se limpia por completo el audio anterior antes de cargar el siguiente,
+  // para evitar el clic/ruido residual del buffer de la pista previa.
+  audio.pause();
+  audio.removeAttribute("src");
+  audio.load();
   audio.src = cancion.urlAudio;
+
   mostrarVista("reproductor");
   audio.play().catch(()=>{ /* el navegador puede requerir un toque previo */ });
 }
+
+// Al terminar una canción, pasa sola a la siguiente; si era la última, vuelve a la primera.
+document.getElementById("rep-audio").addEventListener("ended", () => {
+  if(LISTA_ACTUAL.length === 0) return;
+  const siguiente = (INDICE_ACTUAL + 1) % LISTA_ACTUAL.length;
+  abrirReproductor(siguiente);
+});
 
 cargarCancionero();
 </script>
