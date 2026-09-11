@@ -1,7 +1,7 @@
 {
   "name": "Música Altimiras",
   "short_name": "Altimiras",
-  "description": "Ritmos y canciones - Jose Altimiras - Se actualiza solo",
+  "description": "Letras, textos, Música - José Altimiras Lampré - Desarrollado con IA",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
