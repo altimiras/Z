@@ -1,24 +1,29 @@
 {
-  "background_color": "#0e0c14",
-  "description": "Ritmos y canciones - Jose Altimiras",
+  "name": "Música Altimiras",
+  "short_name": "Altimiras",
+  "description": "Ritmos y canciones - Jose Altimiras - Se actualiza solo",
+  "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
+  "display_override": [
+    "standalone",
+    "minimal-ui"
+  ],
+  "orientation": "any",
+  "background_color": "#0e0c14",
+  "theme_color": "#0e0c14",
   "icons": [
     {
-      "purpose": "any maskable",
-      "sizes": "192x192",
       "src": "icon-192.png",
-      "type": "image/png"
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "purpose": "any maskable",
-      "sizes": "512x512",
       "src": "icon-512.png",
-      "type": "image/png"
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
     }
-  ],
-  "name": "Música Altimiras",
-  "orientation": "any",
-  "short_name": "Altimiras",
-  "start_url": "./",
-  "theme_color": "#0e0c14"
+  ]
 }
