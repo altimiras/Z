@@ -99,7 +99,7 @@ let GENEROS={}, GENERO_ACTUAL=null, LISTA_ACTUAL=[], INDICE_ACTUAL=-1, HISTORIAL
 function toast(m){ const t=document.getElementById("toast"); t.textContent=m; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"),2600); }
 function nombreGenero(c){ return c.replace(/[_-]+/g," ").trim().replace(/\b\w/g,l=>l.toUpperCase()); }
 function tituloDesdeArchivo(n){ const s=n.substring(0,n.lastIndexOf("."))||n; return s.replace(/[_-]+/g," ").trim().replace(/\b\w/g,l=>l.toUpperCase()); }
-function obtenerConfig(){ const host=location.hostname; const partes=location.pathname.split("/").filter(Boolean); return {usuario:host.split(".")[0], repositorio:partes[0]||"Z", rama:RAMA, carpetaMp3:CARPETA_MP3}; }
+function obtenerConfig(){ return {usuario:"altimiras", repositorio:"Z", rama:RAMA, carpetaMp3:CARPETA_MP3}; }
 let splashTimeout;
 function ocultarSplash(){ clearTimeout(splashTimeout); const s=document.getElementById("splash"); s.classList.add("oculta"); setTimeout(()=>s.style.display="none",800); }
 function iniciarSplash(){
@@ -286,7 +286,7 @@ document.getElementById("btn-next").addEventListener("click",()=>{ if(LISTA_ACTU
 function descargar(c){ const a=document.createElement("a"); a.href=c.urlAudio; a.download=c.titulo+".mp3"; document.body.appendChild(a); a.click(); a.remove(); toast("Descargando "+c.titulo); }
 
 async function compartirConCaratula(c){
-  const urlBase="https://altimiras.github.io/Z/";
+  const urlBase=location.origin+"/Z/";
   const urlCancion=`${urlBase}?cancion=${encodeURIComponent(c.ruta)}`;
   const texto=`🎵 Escucha "${c.titulo}"${c.artista?` de ${c.artista}`:''} en Música Altimiras`;
 
